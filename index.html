@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+		*{margin: 0;padding: 0;}
+			.box{
+				width: 350px;
+				height: 350px;
+				border: 1px solid #ccc;
+				margin: 50px;
+				position: relative;
+			}
+			.big{
+				position: absolute;
+				width: 450px;
+				height: 450px;
+				top: 0;
+				left: 360px;
+				overflow: hidden;
+				display: none;
+			}
+			.mask{
+				width: 100px;
+				height: 100px;
+				background: rgba(233,233,0,.3);
+				position: absolute;
+				top: 0;
+				left: 0;
+				cursor: move;
+				display: none;
+			}
+			.small{
+				position: relative;
+			}
+			.big img{
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="box" id="box">
+			<div class="small">
+				<img src="images/001.jpg"/>
+				<div class="mask"></div>
+			</div>
+			<div class="big">
+				<img src="images/0001.jpg"/>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	var box = document.getElementById("box");
+	var small = box.children[0];
+	var mask = small.children[1];
+	var big = box.children[1];
+	var bigImg = big.children[0];
+	small.onmouseover = function(){
+		mask.style.display = "block";
+		big.style.display = "block";
+	}
+	small.onmouseout = function(){
+		mask.style.display = "none";
+		big.style.display = "none";
+	}
+	
+	var x = 0,y = 0;
+	small.onmousemove = function(event){
+		var event = event || window.event;//兼容写法，千万别忘了
+		x = event.clientX - this.offsetParent.offsetLeft - mask.offsetWidth/2;
+		//参数的距页面距离减去small的爸爸的左边距盒子距离，就会等于鼠标离盒子的距离。
+		y = event.clientY - this.offsetParent.offsetTop - mask.offsetHeight/2;
+		
+		if(x<0)
+		{x = 0}
+		else if(x>this.offsetWidth - mask.offsetWidth){
+			x = this.offsetWidth - mask.offsetWidth;
+		}
+		if(y<0)
+		{y = 0}
+		else if(y>this.offsetHeight - mask.offsetHeight){
+			y = this.offsetHeight - mask.offsetHeight;
+		}
+		
+		mask.style.left = x +"px";//px勿忘
+		mask.style.top = y + "px";
+//		console.log(x+".."+y);
+		//最后一步，大图的移动距离和小图的移动距离有一定的比例关系
+//		并且小盒子是往下拖动,大图就网上移动显示
+		bigImg.style.left = -x*bigImg.offsetWidth/this.offsetWidth +"px";
+		bigImg.style.top = -y*bigImg.offsetHeight/this.offsetHeight +"px";
+		
+	}
+</script>
